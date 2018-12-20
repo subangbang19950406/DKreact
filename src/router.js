@@ -17,7 +17,7 @@ export default class Irouter extends React.Component{
 										<Admin>
 											<Switch>
 												<Route path="/admin/houseList" component={HouseList}></Route>
-												<Route path="/admin/houseAudit" component={ HouseAudit}></Route>
+												<Route path="/admin/houseAudit" component={HouseAudit}></Route>
 												<Route component={Errors}></Route>
 											</Switch>
 										</Admin>

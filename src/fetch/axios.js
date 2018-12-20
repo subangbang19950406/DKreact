@@ -22,14 +22,15 @@ export default class Axios {
             loading = document.getElementById('ajaxLoading');
             loading.style.display = 'block';
         }
-        let baseApi = ' https://www.easy-mock.com/mock/5c120246af543f649a71d79c/reactsbb';
+        let baseApi = 'https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify';
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
-                method:'get',
+                method:'post',
                 baseURL:baseApi,
+                headers: {"Content-Type":"application/json"},
                 timeout:5000,
-                params: (options.data && options.data.params) || ''
+                params: (options.data && options.data.params) || '',
             }).then((response)=>{
                 if (options.data && options.data.isShowLoading !== false) {
                     loading = document.getElementById('ajaxLoading');
@@ -37,14 +38,15 @@ export default class Axios {
                 }
                 if (response.status == '200'){
                     let res = response.data;
-                    if (res.code == '0'){
-                        resolve(res);
-                    }else{
-                        Modal.info({
-                            title:"提示",
-                            content:res.msg
-                        })
-                    }
+                    resolve(res);
+                    // if (res.code == '0'){
+                    //     resolve(res);
+                    // }else{
+                    //     Modal.info({
+                    //         title:"提示",
+                    //         content:res.msg
+                    //     })
+                    // }
                 }else{
                     reject(response.data);
                 }

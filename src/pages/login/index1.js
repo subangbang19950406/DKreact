@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Card, Form, Input, Icon, Checkbox } from 'antd';
-import axios from './../../fetch/axios.js'
-// import Axios from 'axios'
+import { fetchPost } from './../../fetch/fetch.js';
 import './index.less';
 const FormItem = Form.Item;
 class Login extends Component {
@@ -58,21 +57,25 @@ class Login extends Component {
         e.preventDefault();
         const { history } = this.props;
         this.props.form.validateFields((err, values) => {
+            
             if (err) {
                 return;
             } else {
-                // axios.ajax({
-                //     url:'console/login',
-                //     data:{
-                //         params:{
-                //             "staffCode":"dk8888",
-                //             "inputPassword":"123456"
-                //         }
-                //     }
-                // }).then((res)=>{
-                //     console.log(res)
-                // })
-                history.replace("/admin")
+                fetchPost('https://test.dongkenet.com/api/tms/1.0.0.daily/console/login', {
+                    // staffCode: values.username,
+                    // inputPassword: values.password, 
+                    // remember: false
+                    "staffCode":"dk8888",
+                    "inputPassword":"123456"
+                }).then(rep => {
+                    console.log(rep)
+                    // localStorage.setItem('userData', JSON.stringify(rep));
+                    
+                    // console.log(rep, 'userData');
+                })
+                // var userData = values;
+                // localStorage.setItem('userData', JSON.stringify(userData));
+               
             }
         });
     }

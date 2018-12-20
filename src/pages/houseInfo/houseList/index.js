@@ -1,11 +1,22 @@
 import React from 'react';
-import { Button ,Table} from 'antd';
+import { Card, Button, Table, Form, Select, Modal, message,Input,Radio } from 'antd';
+import {Router, Route, Link}from 'react-router-dom';
 // import axios from './../../../fetch/axios.js'
 // import Utils from './../../../untils/index1.js'
+const RadioGroup = Radio.Group;
+const Search = Input.Search;
+const { TextArea } = Input;
+const FormItem = Form.Item;
+const Option = Select.Option;
 export default class HouseList extends React.Component{
-  state={
-
-  }
+    constructor(props){
+        super(props);
+        this.state={
+            visible: false,
+            flag:false//Modal框按钮
+        }
+        this.showModal=this.showModal.bind(this)
+    }
   componentDidMount(){
     const data = [
         {
@@ -45,17 +56,6 @@ export default class HouseList extends React.Component{
     this.setState({
       dataSource: data
     })
-  }
-  // onRowClick=(record,index)=>{
-  //   let selectKey = [index];
-  //   console.log(record.userName+record.id)
-  //   this.setState({
-  //     selectedRowKeys:selectKey,//选的key值
-  //     selectedItem:record//代表选的哪一项
-  //   })
-  // }
-  handleChakan=(item)=>{
-    console.log(item)
   }
     render(){
       const columns = [
@@ -129,17 +129,26 @@ export default class HouseList extends React.Component{
           title:"操作",
           key:"action",
           render:(text,item)=>{
-            return <Button size="small" onClick={this.handleChakan.bind(this,item)}>删除</Button>
-        }
-          // render:(text,item)=>{//1文本2此行的所有字段
-          //     return (
-          //       <p onClick={(item,text)=>{this.handleChakan(item,text)}}>查看</p>
-          //     )
-          // }
+            // return <Button size="small" onClick={this.handleChakan.bind(this,item)}>删除</Button>
+            return <div>
+                            <Button size="small" onClick={this.showModal.bind(this,item)}>删除{item.id}</Button>
+                             <Modal
+                            title="页面审核"
+                            visible={this.state.visible}
+                            onOk={this.hideModal}
+                            onCancel={this.hideModal}
+                            okText="提交结果"
+                            cancelText="取消"
+                            mask={this.state.flag}
+                            >
+                            <OpenModal />
+                            </Modal>
+                </div>
+            
+            
+         }
         }
     ]
-    // const {selectedRowKeys} = this.state;
-
     const rowCheckSelection={
       type:"checkbox",
       // selectedRowKeys:selectedRowKeys,
@@ -154,7 +163,11 @@ export default class HouseList extends React.Component{
     }
       return (
         <div>
-              <Table 
+            
+            <div style={{height:100,paddingTop:20}}>
+                 <FilterForm/>
+            </div>
+            <Table 
                         columns={columns}
                         dataSource={this.state.dataSource}
                         pagination={false}
@@ -167,8 +180,31 @@ export default class HouseList extends React.Component{
                         //   }
                         // }}
                   />
+            
         </div>
       )
+    }
+        // onRowClick=(record,index)=>{
+    //   let selectKey = [index];
+    //   console.log(record.userName+record.id)
+    //   this.setState({
+    //     selectedRowKeys:selectKey,//选的key值
+    //     selectedItem:record//代表选的哪一项
+    //   })
+    // }
+    showModal (item) {
+        console.log(item)
+    this.setState({
+        visible: true,
+    });
+    }
+    hideModal = () => {
+    this.setState({
+        visible: false,
+    });
+    }
+    handleChakan=(item)=>{
+    console.log(item)
     }
 }
 
@@ -176,3 +212,83 @@ export default class HouseList extends React.Component{
     
 // }
 // Search = Form.create({})(Search);
+class FilterForm extends React.Component{
+    
+
+    render(){
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <Form layout="inline">
+                <FormItem label="房屋地址：" style={{marginLeft:30 }}>
+                            {getFieldDecorator('username')(
+                                <Input style={{ width: 350}} placeholder='请输入' />
+                            )}
+                </FormItem>
+                <FormItem label="房屋状态：" style={{marginLeft:30 }}>
+                    {
+                        getFieldDecorator('mode')(
+                            <Select
+                                style={{ width: 350 }}
+                                placeholder="请选择"
+                            >
+                                <Option value="1">已验证</Option>
+                                <Option value="2">未验证</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem>
+                    <Button type="primary" style={{margin:'0 20px'}} onClick={this.handleSearch}>查询</Button>
+                    <Button onClick={this.handleReset}>重置</Button>
+                </FormItem>
+            </Form>
+        );
+    }
+    handleSearch=()=> {
+        // e.preventDefault();
+        const { history } = this.props;
+        this.props.form.validateFields((err, values) => {
+            if (err) {
+                return;
+            } else {
+                
+            }
+        });
+    }
+    handleReset=()=>{//重置按钮
+
+    }
+}
+FilterForm = Form.create({})(FilterForm);
+class OpenModal extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            value: 2,
+        }
+        this.onChange=this.onChange.bind(this)
+    }
+    render(){
+        return (
+            <div>
+                    <p><img src=""/><img src=""/></p>
+                    <p>房屋地址：软件大道</p>
+                    <p>房屋面积：123.4</p>
+                    <p>
+                        <RadioGroup onChange={this.onChange} value={this.state.value}>
+                        审核结果：
+                            <Radio value={1}>审核通过</Radio>
+                            <Radio value={2}>审核未通过</Radio>
+                        </RadioGroup>  
+                    </p>   
+                    <p>审核说明：<TextArea rows={4} placeholder="请输入说明"/></p>
+            </div>
+        )
+    }
+    onChange(e){
+        console.log('radio checked', e.target.value);
+        this.setState({
+          value: e.target.value,
+        });
+      }
+}
