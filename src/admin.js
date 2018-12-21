@@ -23,9 +23,7 @@ export default class Admin extends React.Component{
 			}
 	  }
 	
-	  handleVisibleChange = (flag) => {
-		this.setState({ visible: flag });
-	  }
+	
 	render(){
 		const menu = (
 			<Menu onClick={this.handleMenuClick}>
@@ -108,5 +106,8 @@ export default class Admin extends React.Component{
 					</Layout>
 			</Layout>
 			)	
+	}
+	handleVisibleChange = (flag) => {
+		this.setState({ visible: flag });
 	}
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import {HashRouter,Route,Switch} from 'react-router-dom'
+import {HashRouter,Route,Switch,BrowserRouter} from 'react-router-dom'
 import App from './App.js'
 import Admin from './admin.js';
 import Login from './pages/login/index.js';
@@ -9,7 +9,7 @@ import HouseAudit from './pages/houseInfo/houseAudit/index.js';
 export default class Irouter extends React.Component{
 	render(){
 		return (
-				<HashRouter>
+				<BrowserRouter>
 						<App>
 							<Switch>
 									<Route exact path="/" component={Login}></Route>
@@ -24,7 +24,7 @@ export default class Irouter extends React.Component{
 									}/>
 							</Switch>						
 						</App>
-				</HashRouter>
+				</BrowserRouter>
 				
 			)
 	}

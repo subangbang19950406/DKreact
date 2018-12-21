@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch'
+
 export const searchToObj = (url) => {
     /*这个方法将"?letter=2&opp=23"这种string转换为JS对象形式，方便获取URL的参数*/
     let theRequest = {};
@@ -18,7 +18,7 @@ export const objToSearch = function (obj) {
     for (let item in obj) {
         newSearch = `${newSearch}${item}=${obj[item]}&`;
     }
-    return newSearch;
+    return newSearch.substring(0,newSearch.length-1);//去掉最后的&
 };
 
 export const fetchGet = (url, fetchPrm) => {
@@ -34,13 +34,17 @@ export const fetchPost = (url, fetchPrm) => {
     return fetch(url, {
         method: 'POST',
         body: JSON.stringify(fetchPrm),
+        credentials: 'include',
         headers: new Headers({
-            'Content-Type': 'application/json' // 指定提交方式为表单提交
-        })
+            'Content-Type': 'application/json', // 指定提交方式为表单提交
+        }),
+        xhrFields:{
+            withCredentials:true
+        }
     }).then((response) => {
-        // if (response.status === 200) {
-        //     return response.json();
-        // }
+        if (response.ok) {
+            return response.json();
+        }
         return response.json();
     });
 }
