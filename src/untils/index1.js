@@ -8,16 +8,16 @@ export default {
         let date = new Date(time);
         return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
     },
-    pagination(data,callback){
+    pagination(res,callback){//callback点击下一页触发的回调
         return {
             onChange:(current)=>{
                 callback(current)
             },
-            current:data.result.page,
-            pageSize:data.result.page_size,
-            total: data.result.total_count,
+            current:res.data.pageNo,
+            pageSize:res.data.pageSize,
+            total: res.data.total,
             showTotal:()=>{
-                return `共${data.result.total_count}条`
+                return `共${res.data.total}条`
             },
             showQuickJumper:true
         }
@@ -52,16 +52,16 @@ export default {
         number += '';
         return number.replace(/(\d{3})\d*(\d{4})/g, '$1***********$2')
     },
-    getOptionList(data){
-        if(!data){
-            return [];
-        }
-        let options = [] //[<Option value="0" key="all_key">全部</Option>];
-        data.map((item)=>{
-            options.push(<Option value={item.id} key={item.id}>{item.name}</Option>)
-        })
-        return options;
-    },
+    // getOptionList(data){
+    //     if(!data){
+    //         return [];
+    //     }
+    //     let options = [] //[<Option value="0" key="all_key">全部</Option>];
+    //     data.map((item)=>{
+    //         options.push(<Option value={item.id} key={item.id}>{item.name}</Option>)
+    //     })
+    //     return options;
+    // },
     /**
      * ETable 行点击通用函数
      * @param {*选中行的索引} selectedRowKeys

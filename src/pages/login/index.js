@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Card, Form, Input, Icon, Checkbox, message } from 'antd';
 // import $ from 'jquery'
 import { fetchPost } from './../../fetch/fetch.js'
-import './index.less';
+import './index.css';
 const FormItem = Form.Item;
 class Login extends Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class Login extends Component {
                     console.log(rep)
                     if (rep.code === "0") {
                         localStorage.setItem('userData', JSON.stringify(rep));
-                        history.replace('/admin');
+                        history.replace('/admin/home');
                     } else {
                         message.error(rep.msg)
                     }

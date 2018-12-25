@@ -368,21 +368,21 @@ module.exports = {
               getLocalIdent: getCSSModuleLocalIdent,
             }),
           },
-          {
-            test: lessRegex,
-            exclude:lessModuleRegex,
-            use: getStyleLoaders({
-              importLoaders: 2,
-            },'less-loader'),
-          },
-          {
-            test: lessModuleRegex,
-            use: getStyleLoaders({
-              importLoaders: 2,
-              modules: true,
-              getLocalIdent: getCSSModuleLocalIdent,
-            },'less-loader'),
-          },
+          // {
+          //   test: lessRegex,
+          //   exclude:lessModuleRegex,
+          //   use: getStyleLoaders({
+          //     importLoaders: 2,
+          //   },'less-loader'),
+          // },
+          // {
+          //   test: lessModuleRegex,
+          //   use: getStyleLoaders({
+          //     importLoaders: 2,
+          //     modules: true,
+          //     getLocalIdent: getCSSModuleLocalIdent,
+          //   },'less-loader'),
+          // },
           // Opt-in support for SASS. The logic here is somewhat similar
           // as in the CSS routine, except that "sass-loader" runs first
           // to compile SASS files into CSS.

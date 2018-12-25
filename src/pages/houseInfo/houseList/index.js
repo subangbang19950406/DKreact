@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Button, Table, Form, Select, Modal, message, Input, Radio ,Pagination } from 'antd';
-import { Router, Route, Link } from 'react-router-dom';
+import { Card, Button, Table, Form, Select, Modal, message, Input, Radio, Pagination } from 'antd';
+import { Router, Route, Link } from 'react-router-dom'
 import $ from 'jquery'
 import { fetchPost } from './../../../fetch/fetch.js'
-import './index.less'
+import Untils from './../../../untils/index1.js'
+import './index.css'
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
 const { TextArea } = Input;
@@ -19,44 +20,17 @@ export default class HouseList extends React.Component {
             flag: false,//Modal框按钮,
             dataList: [],
             web: "web",
-            num:0
+            num: 0
         }
         this.showModal = this.showModal.bind(this)
         this.showModals = this.showModals.bind(this)
         this.showModalB = this.showModalB.bind(this)
     }
+    params = {
+        pageNo: 1
+    }
     componentDidMount() {
-
-        // const data = [
-        //     {
-        //         id: '0',
-        //         userName: 'Jack',
-        //         sex: '1',
-        //         state: '1',
-        //         interest: '1',
-        //         birthday: '2000-01-01',
-        //         address: '北京市海淀区奥林匹克公园',
-        //         time: '09:00'
-        //     },
-        //     {
-        //         id: '1',
-        //         userName: 'Jack',
-        //         sex: '1',
-        //         state: '1',
-        //         interest: '1',
-        //         birthday: '2000-01-01',
-        //         address: '北京市海淀区奥林匹克公园',
-        //         time: '09:00'
-        //     }
-        // ]
-        // data.map((item, index) => {
-        //     item.key = index;
-        // })
-        // this.setState({
-        //     dataSource: data
-        // })
         this.questRender()
-
     }
     render() {
         const columns = [
@@ -67,10 +41,15 @@ export default class HouseList extends React.Component {
             },
             {
                 title: '详情',
-                key: 'type',
+                key: '1',
                 dataIndex: 'type',
                 render(type) {
-                    return type == "0T0" ? '业主' : '委托人'
+                    return type == "OT0" ? '业主' : '委托人'
+                    // let config = {
+                    //     "OT1": "业主",
+                    //     "OT0": "委托人",
+                    // }
+                    // return config[type]
                 }
             },
             {
@@ -97,7 +76,7 @@ export default class HouseList extends React.Component {
                 render: (text, record, index) => {
                     if (record.status == "00A") {
                         return <div>
-                            <Button size="small" type="primary" onClick={this.showModal.bind(this, record)}>审核</Button>
+                            <Button size="small" type="primary" style={{ color: "black" }} onClick={this.showModal.bind(this, record)}>审核</Button>
                             <Modal
                                 title={null}
                                 visible={this.state.visible}
@@ -123,7 +102,7 @@ export default class HouseList extends React.Component {
 
                     } else if (record.status == "00C") {
                         return <div>
-                            <Button size="small" onClick={this.showModals.bind(this, record)}>查看</Button>
+                            <Button size="small" style={{ backgroundColor: "#FF4040" }} onClick={this.showModals.bind(this, record)}>查看</Button>
                             <Modal
                                 title="查看未通过详情"
                                 visible={this.state.visibles}
@@ -143,12 +122,15 @@ export default class HouseList extends React.Component {
                                     custArr={this.state.custArr}
                                     owerImgs={this.state.owerImgs}
                                     custImgs={this.state.custImgs}
+                                    custArrD={this.state.custArrD}//业主不通过查看信息
+                                    custImgD={this.state.custImgD}
+                                    dReason={this.state.dReason}
                                 />
                             </Modal>
                         </div>
                     } else if (record.status == "00B") {
                         return <div>
-                            <Button size="small" onClick={this.showModalB.bind(this, record)}>查看</Button>
+                            <Button size="small" style={{ backgroundColor: "lightgreen" }} onClick={this.showModalB.bind(this, record)}>查看</Button>
                             <Modal
                                 title="查看通过详情"
                                 visible={this.state.visibless}
@@ -168,6 +150,9 @@ export default class HouseList extends React.Component {
                                     custArr={this.state.custArr}
                                     owerImgs={this.state.owerImgs}
                                     custImgs={this.state.custImgs}
+                                    custArrV={this.state.custArrV}//业主通过查看信息
+                                    custImgV={this.state.custImgV}
+                                    vReason={this.state.vReason}
                                 />
                             </Modal>
                         </div>
@@ -191,16 +176,16 @@ export default class HouseList extends React.Component {
             <div>
 
                 <div style={{ height: 100, paddingTop: 20 }}>
-                    <FilterForm handleSearch={this.handleSearch.bind(this)} 
-                    handleReset={this.handleReset.bind(this)}
-                    wrappedComponentRef={(inst) => { this.cityForm = inst; }}
-                    num={this.state.num}
+                    <FilterForm handleSearch={this.handleSearch.bind(this)}
+                        handleReset={this.handleReset.bind(this)}
+                        wrappedComponentRef={(inst) => { this.cityForm = inst; }}
+                        num={this.state.num}
                     />
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={this.state.num==1?this.state.dataSearchList:this.state.dataList}
-                    pagination={false}
+                    dataSource={this.state.num == 1 ? this.state.dataSearchList : this.state.dataList}
+                    pagination={this.state.pagination}
                     rowSelection={rowCheckSelection}
                 // onRow={(record,index) => {//点击的行，record为选中的那行的信息
                 //   return {
@@ -210,8 +195,7 @@ export default class HouseList extends React.Component {
                 //   }
                 // }}
                 />
-               <Pagination showQuickJumper defaultCurrent={2} total={500} onChange={this.onChange}
-               />
+
 
             </div>
         )
@@ -225,10 +209,7 @@ export default class HouseList extends React.Component {
     //   })
     // }
 
-    //分页
-    onChange=(pageNumber)=>{
-        console.log('Page: ', pageNumber);
-    }
+
     //点击审核出现   此处调接口
     showModal(record) {
         // console.log("刘念")
@@ -273,7 +254,8 @@ export default class HouseList extends React.Component {
                     houseVerifyId: info.houseVerifyId,
                     houseId: info.houseId,
                 }
-                console.log("oweIMGs", owerImgs)
+                console.log("oweIMGs")
+                console.log("委托人审核的ids", ids)
                 this.setState({
                     owerArr: owerArr,
                     owerImgs: owerImgs,
@@ -315,47 +297,74 @@ export default class HouseList extends React.Component {
     //点击查看未通过出现的  此处调接口
     showModals(record) {
         console.log(record)
-
+        this.setState({
+            custArr: null
+        })
         fetchPost("https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify/query", {
             houseId: record.houseId,
             houseVerifyId: record.houseVerifyId,
         }).then(res => {
-            console.log("red未通过查看")
-            let infos = res.data.houseOwnerPo
-            let info = res.data
-            let owerImgs = []
-            let custImgs = []
-            let owerArr = {
-                a: infos.ownerName,
-                b: infos.phoneNbr,
-                c: infos.identityCode,
-                d: infos.identityPic,
-                e: infos.identityPicBack,
+
+            // let infos = res.data.houseOwnerPo
+            if (res.data.houseOwnerPo) {
+                console.log("red未通过查看委托人信息", res)
+                let infos = res.data.houseOwnerPo
+                let info = res.data
+                let owerImgs = []
+                let custImgs = []
+                let owerArr = {
+                    a: infos.ownerName,
+                    b: infos.phoneNbr,
+                    c: infos.identityCode,
+                    d: infos.identityPic,
+                    e: infos.identityPicBack,
+                }
+                //姓名，手机号，身份证号，身份证正面，反面，房屋认真书两张
+                info.certificatePics.map((ite, ins) => {
+                    owerImgs.push(<img src={"https:test.dongkenet.com/" + ite.housePicUrl} key={ins} />)
+                })
+                let custArr = {
+                    a: info.custName,
+                    b: info.phoneNbr,
+                    c: info.identityCode,
+                    d: info.identityPic,
+                    e: info.identityPicBack
+                }
+                info.proxyPics.map((ites, inss) => {
+                    custImgs.push(<img src={"https:test.dongkenet.com/" + ites.housePicUrl} key={inss} />)
+                })
+                //姓名，手机号，身份证号，身份证正面，反面，委托书照片
+                console.log("oweIMGs未通过查看", owerImgs, custArr)
+                this.setState({
+                    owerArr: owerArr,
+                    owerImgs: owerImgs,
+                    custArr: custArr,
+                    custImgs: custImgs,
+                    visibles: true,
+                    record: record,
+                })
+            } else {
+                console.log("red未通过查看业主信息", res)
+                let info = res.data
+                let custImgD = []
+                let custArrD = {
+                    a: info.custName,
+                    b: info.custCode,
+                    c: info.identityCode,
+                    d: info.identityPic,
+                    e: info.identityPicBack,
+                }
+                info.certificatePics.map((ite, ins) => {
+                    custImgD.push(<img src={ite.housePicUrl} key={ins} />)
+                })
+                this.setState({
+                    custArrD: custArrD,
+                    visibles: true,
+                    custImgD: custImgD,
+                    record: record,
+                })
             }
-            //姓名，手机号，身份证号，身份证正面，反面，房屋认真书两张
-            info.certificatePics.map((ite, ins) => {
-                owerImgs.push(<img src={"https:test.dongkenet.com/" + ite.housePicUrl} key={ins} />)
-            })
-            let custArr = {
-                a: info.custName,
-                b: info.phoneNbr,
-                c: info.identityCode,
-                d: info.identityPic,
-                e: info.identityPicBack
-            }
-            info.proxyPics.map((ites, inss) => {
-                custImgs.push(<img src={"https:test.dongkenet.com/" + ites.housePicUrl} key={inss} />)
-            })
-            //姓名，手机号，身份证号，身份证正面，反面，委托书照片
-            console.log("oweIMGs未通过查看", owerImgs)
-            this.setState({
-                owerArr: owerArr,
-                owerImgs: owerImgs,
-                custArr: custArr,
-                custImgs: custImgs,
-                visibles: true,
-                record: record,
-            })
+
         })
 
     }
@@ -363,46 +372,75 @@ export default class HouseList extends React.Component {
     //点击查看通过的出现的  此处调接口
     showModalB(record) {
         console.log(record)
+        this.setState({
+            custArr: null
+        })
+        
         fetchPost("https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify/query", {
             houseId: record.houseId,
             houseVerifyId: record.houseVerifyId,
         }).then(res => {
-            console.log("res通过查看", res)
-            let infos = res.data.houseOwnerPo
-            let info = res.data
-            let owerImgs = []
-            let custImgs = []
-            let owerArr = {
-                a: infos.ownerName,
-                b: infos.phoneNbr,
-                c: infos.identityCode,
-                d: infos.identityPic,
-                e: infos.identityPicBack,
+            // console.log("res通过查看", res)
+            if (res.data.houseOwnerPo) {
+                console.log("red通过查看委托人信息", res)
+                let infos = res.data.houseOwnerPo
+                let info = res.data
+                let owerImgs = []
+                let custImgs = []
+                let owerArr = {
+                    a: infos.ownerName,
+                    b: infos.phoneNbr,
+                    c: infos.identityCode,
+                    d: infos.identityPic,
+                    e: infos.identityPicBack,
+                }
+                //姓名，手机号，身份证号，身份证正面，反面，房屋认真书两张
+                info.certificatePics.map((ite, ins) => {
+                    owerImgs.push(<img src={"https:test.dongkenet.com/" + ite.housePicUrl} key={ins} />)
+                })
+                let custArr = {
+                    a: info.custName,
+                    b: info.phoneNbr,
+                    c: info.identityCode,
+                    d: info.identityPic,
+                    e: info.identityPicBack
+                }
+                info.proxyPics.map((ites, inss) => {
+                    custImgs.push(<img src={"https:test.dongkenet.com/" + ites.housePicUrl} key={inss} />)
+                })
+                //姓名，手机号，身份证号，身份证正面，反面，委托书照片
+                console.log("oweIMGs未通过查看", owerImgs)
+                this.setState({
+                    owerArr: owerArr,
+                    owerImgs: owerImgs,
+                    custArr: custArr,
+                    custImgs: custImgs,
+                    visibless: true,
+                    record: record,
+                })
+            } else {
+                console.log("red通过查看业主信息", res)
+                let info = res.data
+                let custImgV = []
+                let custArrV = {
+                    a: info.custName,
+                    b: info.custCode,
+                    c: info.identityCode,
+                    d: info.identityPic,
+                    e: info.identityPicBack,
+                }
+                info.certificatePics.map((ite, ins) => {
+                    custImgV.push(<img src={ite.housePicUrl} key={ins} />)
+                })
+                console.log(custImgV)
+                this.setState({
+                    owerArr: custArrV,
+                    visibless: true,
+                    custImgV: custImgV,
+                    record: record,
+                })
             }
-            //姓名，手机号，身份证号，身份证正面，反面，房屋认真书两张
-            info.certificatePics.map((ite, ins) => {
-                owerImgs.push(<img src={"https:test.dongkenet.com/" + ite.housePicUrl} key={ins} />)
-            })
-            let custArr = {
-                a: info.custName,
-                b: info.phoneNbr,
-                c: info.identityCode,
-                d: info.identityPic,
-                e: info.identityPicBack
-            }
-            info.proxyPics.map((ites, inss) => {
-                custImgs.push(<img src={"https:test.dongkenet.com/" + ites.housePicUrl} key={inss} />)
-            })
-            //姓名，手机号，身份证号，身份证正面，反面，委托书照片
-            console.log("oweIMGs未通过查看", owerImgs)
-            this.setState({
-                owerArr: owerArr,
-                owerImgs: owerImgs,
-                custArr: custArr,
-                custImgs: custImgs,
-                visibless: true,
-                record: record,
-            })
+
         })
 
     }
@@ -410,7 +448,7 @@ export default class HouseList extends React.Component {
     //点击提交审核  此处调接口
     submitModal = () => {
         let cityInfo = this.cityForm.props.form.getFieldsValue();
-        console.log(cityInfo);
+        console.log("提交审核", cityInfo, this.state.ids);
         if (cityInfo.radio == undefined || cityInfo.textarea == undefined) {
             return message.error("请勾选审核状态和输入说明")
         } else {
@@ -426,6 +464,7 @@ export default class HouseList extends React.Component {
                         this.questRender()
                         this.setState({
                             visible: false,
+                            vSeason: cityInfo.textarea,
                         });
 
                     }
@@ -443,6 +482,7 @@ export default class HouseList extends React.Component {
                         this.questRender()
                         this.setState({
                             visible: false,
+                            dReason: cityInfo.textarea
                         });
                     }
 
@@ -457,39 +497,39 @@ export default class HouseList extends React.Component {
 
         let cityInfo = this.cityForm.props.form.getFieldsValue();
         console.log(cityInfo);
-                if (cityInfo.status == undefined) {
-                    message.error("请将筛选的条件补充完毕")
-                } else {
-                    fetchPost("https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify/query-by-page", {
-                        status: cityInfo.status,
-                        pageInfo: {
-                            "pageNo": 1,
-                            "pageSize": 20
+        if (cityInfo.status == undefined) {
+            message.error("请将筛选的条件补充完毕")
+        } else {
+            fetchPost("https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify/query-by-page", {
+                status: cityInfo.status,
+                pageInfo: {
+                    "pageNo": 1,
+                    "pageSize": 20
+                }
+            }).then(res => {
+                console.log(res)
+                if (res.code == "0") {
+                    let arrSearch = [];
+                    res.data.rows.map((row, ind) => {
+                        let obj = {
+                            address: row.houseBaseInfoDto.detailAddress,
+                            status: row.status,
+                            createDate: row.createDate,
+                            houseId: row.houseId,
+                            houseVerifyId: row.houseVerifyId,
+                            type: row.type
                         }
-                    }).then(res => {
-                        console.log(res)
-                        if (res.code == "0") {
-                            let arrSearch = [];
-                            res.data.rows.map((row, ind) => {
-                                let obj = {
-                                    address: row.houseBaseInfoDto.detailAddress,
-                                    status: row.status,
-                                    createDate: row.createDate,
-                                    houseId: row.houseId,
-                                    houseVerifyId: row.houseVerifyId,
-                                    type: row.type
-                                }
-                                arrSearch.push(obj)
-                            })
-                            console.log(arrSearch)
-                            this.setState({
-                                dataSearchList: arrSearch,
-                                num:1,
-                            })
-                        }
-                        
+                        arrSearch.push(obj)
+                    })
+                    console.log(arrSearch)
+                    this.setState({
+                        dataSearchList: arrSearch,
+                        num: 1,
                     })
                 }
+
+            })
+        }
     }
 
 
@@ -498,7 +538,7 @@ export default class HouseList extends React.Component {
         console.log(cityInfo);
         console.log("sss")
         this.setState({
-            num:0
+            num: 0
         })
     }
 
@@ -518,14 +558,17 @@ export default class HouseList extends React.Component {
     questRender = () => {
         fetchPost("https://test.dongkenet.com/api/bms/1.0.0.daily/house-verify/query-by-page", {
             "pageInfo": {
-                "pageNo": "1",
-                "pageSize": "20"
+                pageNo: this.params.pageNo,
+                // "pageSize": "20"
             }
         }).then(res => {
+            let _this = this
             console.log("res", res)
             if (res.code == "0") {
                 let arr = [];
+
                 res.data.rows.map((row, ind) => {
+                    row.key = ind;
                     let obj = {
                         address: row.houseBaseInfoDto.detailAddress,
                         status: row.status,
@@ -536,8 +579,13 @@ export default class HouseList extends React.Component {
                     }
                     arr.push(obj)
                 })
+                // console.log(arr)
                 this.setState({
-                    dataList: arr
+                    dataList: arr,
+                    pagination: Untils.pagination(res, (current) => {
+                        _this.params.pageNo = current
+                        this.questRender()
+                    })
                 })
             }
         })
@@ -580,7 +628,7 @@ class FilterForm extends React.Component {
     }
     //查询按钮的点击事件
 
-    
+
 }
 FilterForm = Form.create({})(FilterForm);
 class OpenModal extends React.Component {
@@ -596,7 +644,6 @@ class OpenModal extends React.Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <div>
-                {/* onSubmit={this.tijiao} */}
                 <Form className="login-form">
                     <p>业主姓名：{this.props.owerArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.owerArr.b}</span></p>
                     <p>业主身份证号：{this.props.owerArr.c}</p>
@@ -635,9 +682,6 @@ class OpenModal extends React.Component {
                             </RadioGroup>
                         )}
                     </FormItem>
-                    {/* <p>审核说明：<TextArea rows={4} placeholder="请输入说明"
-                        
-                    /></p> */}
                     <FormItem>
                         {getFieldDecorator('textarea', {
                             rules: [{ required: true, message: '请填入审核信息' }],
@@ -679,31 +723,42 @@ class OpenModals extends React.Component {
         }
     }
     render() {
+        console.log(this.props.dReason)
         return (
             <div>
-                <p>业主姓名：{this.props.owerArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.owerArr.b}</span></p>
-                <p>业主身份证号：{this.props.owerArr.c}</p>
+                <p>业主姓名：{this.props.custArrD ? this.props.custArrD.a : this.props.owerArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArrD ? this.props.custArrD.b : this.props.owerArr.b}</span></p>
+                <p>业主身份证号：{this.props.custArrD ? this.props.custArrD.c : this.props.owerArr.c}</p>
                 <p className="imgP">
                     业主证明信息：
-                        <img src={"https://test.dongkenet.com/" + this.props.owerArr.d} />
-                    <img src={"https://test.dongkenet.com/" + this.props.owerArr.e} />
-                    {this.props.owerImgs}
+                        <img src={"https://test.dongkenet.com/" + (this.props.custArrD ? this.props.custArrD.d : this.props.owerArr.d)} />
+                    <img src={"https://test.dongkenet.com/" + (this.props.custArrD ? this.props.custArrD.e : this.props.owerArr.e)} />
+                    {this.props.custArrD ? this.props.custImgD : this.props.owerImgs}
                 </p>
                 {/* <p className="imgP">{
                         
                     }</p> */}
-                <p>委托人姓名：{this.props.custArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArr.b}</span></p>
-                <p>业主身份证号：{this.props.custArr.c}</p>
-                <p className="imgP">
-                    委托人证明信息：
-                        <img src={"https://test.dongkenet.com/" + this.props.custArr.d} />
-                    <img src={"https://test.dongkenet.com/" + this.props.custArr.e} />
-                    {this.props.custImgs}
-                </p>
-                <p>房屋地址：{this.props.record.address}</p>
+                <div>
+                    {
+                        this.props.custArr ? <div>
+                            <p>委托人姓名：{this.props.custArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArr.b}</span></p>
+                            <p>业主身份证号：{this.props.custArr.c}</p>
+                            <p className="imgP">
+                                委托人证明信息：
+                                <img src={"https://test.dongkenet.com/" + this.props.custArr.d} />
+                                <img src={"https://test.dongkenet.com/" + this.props.custArr.e} />
+                                {this.props.custImgs}
+                            </p>
+                            <p>房屋地址：{this.props.record.address}</p>
+                        </div> : ""
+                    }
+                </div>
                 <p>
-                    审核结果：<span style={{ color: "red" }}>未通过</span>
+                    审核结果：<span style={{ color: "red" }}>未通过</span>                 
                 </p>
+                <p>
+                    未通过原因：{this.props.dReason}
+                </p>
+
             </div>
         )
     }
@@ -717,31 +772,40 @@ class OpenModalB extends React.Component {
     }
 
     render() {
-        console.log(this.props.objSucess)
+
         return (
             <div>
-                <p>业主姓名：{this.props.owerArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.owerArr.b}</span></p>
-                <p>业主身份证号：{this.props.owerArr.c}</p>
+                <p>业主姓名：{this.props.custArrV ? this.props.custArrV.a : this.props.owerArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArrV ? this.props.custArrV.b : this.props.owerArr.b}</span></p>
+                <p>业主身份证号：{this.props.custArrV ? this.props.custArrV.c : this.props.owerArr.c}</p>
                 <p className="imgP">
                     业主证明信息：
-                        <img src={"https://test.dongkenet.com/" + this.props.owerArr.d} />
-                    <img src={"https://test.dongkenet.com/" + this.props.owerArr.e} />
-                    {this.props.owerImgs}
+                        <img src={"https://test.dongkenet.com/" + (this.props.custArrV ? this.props.custArrV.d : this.props.owerArr.d)} />
+                    <img src={"https://test.dongkenet.com/" + (this.props.custArrV ? this.props.custArrV.e : this.props.owerArr.e)} />
+                    {this.props.custArrV ? this.props.custImgV : this.props.owerImgs}
                 </p>
                 {/* <p className="imgP">{
                         
                     }</p> */}
-                <p>委托人姓名：{this.props.custArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArr.b}</span></p>
-                <p>业主身份证号：{this.props.custArr.c}</p>
-                <p className="imgP">
-                    委托人证明信息：
-                        <img src={"https://test.dongkenet.com/" + this.props.custArr.d} />
-                    <img src={"https://test.dongkenet.com/" + this.props.custArr.e} />
-                    {this.props.custImgs}
-                </p>
-                <p>房屋地址：{this.props.record.address}</p>
+                <div>
+                    {
+                        this.props.custArr ? <div>
+                            <p>委托人姓名：{this.props.custArr.a}<span style={{ marginLeft: 140 }}>业主手机号：{this.props.custArr.b}</span></p>
+                            <p>业主身份证号：{this.props.custArr.c}</p>
+                            <p className="imgP">
+                                委托人证明信息：
+                                <img src={"https://test.dongkenet.com/" + this.props.custArr.d} />
+                                <img src={"https://test.dongkenet.com/" + this.props.custArr.e} />
+                                {this.props.custImgs}
+                            </p>
+                            <p>房屋地址：{this.props.record.address}</p>
+                        </div> : ""
+                    }
+                </div>
                 <p>
                     审核结果：<span style={{ color: "lightgreen" }}>已通过</span>
+                </p>
+                <p>
+                    通过原因：{this.props.vReason}
                 </p>
             </div>
         )

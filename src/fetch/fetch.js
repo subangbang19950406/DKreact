@@ -31,6 +31,11 @@ export const fetchGet = (url, fetchPrm) => {
 }
 
 export const fetchPost = (url, fetchPrm) => {
+    let loading;
+    if (fetchPrm.isShowLoading !== false){
+        loading = document.getElementById('ajaxLoading');
+        loading.style.display = 'block';
+    }
     return fetch(url, {
         method: 'POST',
         body: JSON.stringify(fetchPrm),
@@ -42,6 +47,10 @@ export const fetchPost = (url, fetchPrm) => {
             withCredentials:true
         }
     }).then((response) => {
+        if (fetchPrm.isShowLoading !== false) {
+            loading = document.getElementById('ajaxLoading');
+            loading.style.display = 'none';
+        }
         if (response.ok) {
             return response.json();
         }

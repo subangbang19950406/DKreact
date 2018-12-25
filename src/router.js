@@ -6,6 +6,8 @@ import Login from './pages/login/index.js';
 import Errors from './pages/errors404/index.js';
 import HouseList from './pages/houseInfo/houseList/index.js';
 import HouseAudit from './pages/houseInfo/houseAudit/index.js';
+import ListManage from './pages/infoManage/listManage/index.js';
+import Home from './pages/home/index.js';
 export default class Irouter extends React.Component{
 	render(){
 		return (
@@ -16,8 +18,10 @@ export default class Irouter extends React.Component{
 									<Route path="/admin" render={()=>
 										<Admin>
 											<Switch>
-												<Route path="/admin/houseList" component={HouseList}></Route>
-												<Route path="/admin/houseAudit" component={HouseAudit}></Route>
+												<Route path="/admin/houseInfo/houseList" component={HouseList}></Route>
+												<Route path="/admin/houseInfo/houseAudit" component={HouseAudit}></Route>
+												<Route path="/admin/infoManage/listManage" component={ListManage}></Route>
+												<Route path="/admin/home" component={Home}></Route>
 												<Route component={Errors}></Route>
 											</Switch>
 										</Admin>
